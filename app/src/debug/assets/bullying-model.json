@@ -2,8 +2,9 @@
 	"title": "First day at school",
 
 	"copyright": "Inspire Research Centre",
-
 	"year": 2016,
+	"url": "http://inspirecenter.org",
+	"thubmnail": "thumb-img",
 
 	"authors": [
 		{ "name": "Nearchos Paspallis", "contact": "NPaspallis@uclan.ac.uk", "description": "Director" },
@@ -13,8 +14,10 @@
 	],
 
 	"resources" : [
+		{ "id": "thumb-img",      "type": "image", "source": "http://bullying.aspectsense.com/thumb.jpg", "buffered": true, "alt": "The thumbnail for the story 512x512" },
 		{ "id": "school-img",     "type": "image", "source": "http://bullying.aspectsense.com/school.jpg", "buffered": true, "alt": "A clipart background of a school" },
 		{ "id": "playground-snd", "type": "audio", "source": "http://bullying.aspectsense.com/playgroud.mp3", "buffered": true, "alt": "Kids' playground soundtrack" },
+		{ "id": "what-snd",       "type": "audio", "source": "http://bullying.aspectsense.com/what.mp3", "buffered": true, "alt": "Man grunts" },
 		{ "id": "grunt-snd",      "type": "audio", "source": "http://bullying.aspectsense.com/grunt.mp3", "buffered": true, "alt": "Man grunts" },
 		{ "id": "cheering-snd",   "type": "audio", "source": "http://bullying.aspectsense.com/cheering.mp3", "buffered": true, "alt": "People cheering" },
 		{ "id": "carry_on-snd",   "type": "audio", "source": "http://bullying.aspectsense.com/he_will_carry_on_as_usual.mp3", "buffered": true, "alt": "People cheering" },
@@ -25,6 +28,7 @@
       {
 		  "id": "interaction-1",
           "prompt": "What do you think Andreas will do next?",
+		  "audio-prompt": "what-snd",
           "choices" : [
               {   "order": 1,
                   "prompt": "He will carry on as usual",
@@ -69,7 +73,7 @@
 					"action": "video",
 					"resource-id": "video1",
 					"transition-in": "fade in",
-					"delay-in": 0,
+					"delay-in": 200,
 					"transition-out": "disappear",
 					"delay-out": 0,
 					"progression": "automatic"
