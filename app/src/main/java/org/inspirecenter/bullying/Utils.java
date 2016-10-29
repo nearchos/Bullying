@@ -9,11 +9,14 @@ import java.io.InputStream;
  * Created by salah on 29/10/2016.
  */
 
-public class Utils {
-    public static String loadJSONFromAsset(Context c, String fileName) {
+class Utils {
+    static final String STORIES_ASSETS_PATH = "stories";
+    static String STORY_ID_MSG = "STORY_ID";
+
+    static String loadJSONFromAsset(Context c, String fileName) {
         String json = null;
         try {
-            InputStream is = c.getAssets().open("stories/" + fileName);
+            InputStream is = c.getAssets().open(STORIES_ASSETS_PATH + "/" + fileName);
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);

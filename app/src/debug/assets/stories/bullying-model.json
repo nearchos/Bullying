@@ -114,7 +114,7 @@
         },
         {
           "order": 4,
-          "option-text": "He understands that it was his mistake and carries on his day",
+          "prompt": "He understands that it was his mistake and carries on his day",
           "score": -1,
           "feedback": "No it wasn't Andreas' fault. He is unhappy with his classmates' behaviour and this makes him feel very sad the rest of the day.",
           "feedback-sound": "grunt-snd"

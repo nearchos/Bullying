@@ -24,9 +24,6 @@ public class Choice {
     @SerializedName("feedback-sound")
     @Expose
     private String feedbackSound;
-    @SerializedName("option-text")
-    @Expose
-    private String optionText;
 
     /**
      * @return The order
@@ -110,20 +107,6 @@ public class Choice {
      */
     public void setFeedbackSound(String feedbackSound) {
         this.feedbackSound = feedbackSound;
-    }
-
-    /**
-     * @return The optionText
-     */
-    public String getOptionText() {
-        return optionText;
-    }
-
-    /**
-     * @param optionText The option-text
-     */
-    public void setOptionText(String optionText) {
-        this.optionText = optionText;
     }
 
 }
