@@ -39,8 +39,6 @@ public class ImageAdapter extends BaseAdapter {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public int getCount() {

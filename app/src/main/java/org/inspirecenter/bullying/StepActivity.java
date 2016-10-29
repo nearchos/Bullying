@@ -85,10 +85,14 @@ public class StepActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         storyGson = new GsonBuilder().create().fromJson(json, StoryGson.class);
+        // download resources
+        ResourceManager resourceManager = new ResourceManager(this);
+        resourceManager.DownloadResources(storyGson.getResources());
+
         // set text description of the first step
         stepDescTextView.setText(storyGson.getInteractions().get(0).getPrompt());
-        List<Choice> interactioChoices = storyGson.getInteractions().get(0).getChoices();
-        for (Choice choice : interactioChoices) {
+        List<Choice> interactionChoices = storyGson.getInteractions().get(0).getChoices();
+        for (Choice choice : interactionChoices) {
             if (choice.getOrder() == 1)
                 Opt1Desc.setText(choice.getPrompt());
             if (choice.getOrder() == 2)
@@ -97,9 +101,7 @@ public class StepActivity extends AppCompatActivity {
                 Opt3Desc.setText(choice.getPrompt());
             if (choice.getOrder() == 4)
                 Opt4Desc.setText(choice.getPrompt());
-
         }
-
     }
 
     private void setRadioButtonsBehaviour() {
