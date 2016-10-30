@@ -35,12 +35,10 @@ public class ImageAdapter extends BaseAdapter {
         // populate the stories from asset/stories folder
         AssetManager assetManager = mContext.getAssets();
         try {
-            stories = assetManager.list("stories");
+            stories = assetManager.list(Utils.STORIES_ASSETS_PATH);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public int getCount() {
@@ -61,9 +59,9 @@ public class ImageAdapter extends BaseAdapter {
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
+            imageView.setLayoutParams(new GridView.LayoutParams(150, 150));
+            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            imageView.setPadding(4, 4, 4, 4);
         } else {
             imageView = (ImageView) convertView;
         }
