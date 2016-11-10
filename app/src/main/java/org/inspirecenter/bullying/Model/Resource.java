@@ -1,23 +1,29 @@
 
-package org.inspirecenter.bullying.Model;
+package org.inspirecenter.bullying.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Resource {
+import java.io.Serializable;
+
+public class Resource implements Serializable {
 
     @SerializedName("id")
     @Expose
     private String id;
+
     @SerializedName("type")
     @Expose
     private String type;
+
     @SerializedName("source")
     @Expose
     private String source;
+
     @SerializedName("buffered")
     @Expose
     private Boolean buffered;
+
     @SerializedName("alt")
     @Expose
     private String alt;

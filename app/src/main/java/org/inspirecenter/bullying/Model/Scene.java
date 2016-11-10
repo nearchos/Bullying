@@ -1,26 +1,31 @@
 
-package org.inspirecenter.bullying.Model;
+package org.inspirecenter.bullying.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Scene {
+public class Scene implements Serializable {
 
     @SerializedName("id")
     @Expose
     private String id;
+
     @SerializedName("description")
     @Expose
     private String description;
+
     @SerializedName("background")
     @Expose
     private String background;
+
     @SerializedName("soundtrack")
     @Expose
     private String soundtrack;
+
     @SerializedName("steps")
     @Expose
     private List<Step> steps = new ArrayList<Step>();

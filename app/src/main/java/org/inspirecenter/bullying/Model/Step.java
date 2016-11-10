@@ -1,35 +1,45 @@
 
-package org.inspirecenter.bullying.Model;
+package org.inspirecenter.bullying.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Step {
+import java.io.Serializable;
+
+public class Step implements Serializable {
 
     @SerializedName("id")
     @Expose
     private String id;
+
     @SerializedName("order")
     @Expose
     private Integer order;
+
     @SerializedName("action")
     @Expose
     private String action;
+
     @SerializedName("resource-id")
     @Expose
     private String resourceId;
+
     @SerializedName("transition-in")
     @Expose
     private String transitionIn;
+
     @SerializedName("delay-in")
     @Expose
     private Integer delayIn;
+
     @SerializedName("transition-out")
     @Expose
     private String transitionOut;
+
     @SerializedName("delay-out")
     @Expose
     private Integer delayOut;
+
     @SerializedName("progression")
     @Expose
     private String progression;

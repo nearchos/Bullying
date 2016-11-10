@@ -1,7 +1,6 @@
 package org.inspirecenter.bullying;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -12,101 +11,93 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-import com.google.gson.GsonBuilder;
+import org.inspirecenter.bullying.model.Resource;
+import org.inspirecenter.bullying.model.Story;
 
-import org.inspirecenter.bullying.Model.Resource;
-import org.inspirecenter.bullying.Model.StoryGson;
-
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
+import java.util.Vector;
 
 /**
- * Created by salah on 29/10/2016.
+ * @author Salah Eddin Alshaal
+ * @author Nearchos Paspallis
+ * 29/10/2016.
  */
+class ImageAdapter extends BaseAdapter {
 
-public class ImageAdapter extends BaseAdapter {
+    public static final String TAG = "bullying.ImageAdapter";
+
     private Context mContext;
-    // references to our images
-    private String[] stories;
+    private Vector<Story> stories;
 
-    public ImageAdapter(Context c) {
-        mContext = c;
-        // populate the stories from asset/stories folder
-        AssetManager assetManager = mContext.getAssets();
-        try {
-            stories = assetManager.list(Utils.STORIES_ASSETS_PATH);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    ImageAdapter(final Context context, final Vector<Story> stories) {
+        this.mContext = context;
+        this.stories = stories;
     }
 
     public int getCount() {
-        return stories.length;
+        return stories.size();
     }
 
     public Object getItem(int position) {
-        return null;
+        return stories.elementAt(position);
     }
 
     public long getItemId(int position) {
         return 0;
     }
 
-    // create a new ImageView for each item referenced by the Adapter
+    /**
+     * create a new ImageView for each item referenced by the Adapter
+     */
     public View getView(int position, View convertView, ViewGroup parent) {
+        final int width = (int) mContext.getResources().getDimension(R.dimen.story_image_icon_width);
+        final int padding = (int) mContext.getResources().getDimension(R.dimen.story_image_icon_padding);
         ImageView imageView;
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(150, 150));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            imageView.setPadding(4, 4, 4, 4);
+            imageView.setLayoutParams(new GridView.LayoutParams(width, width));
+            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            imageView.setPadding(padding, padding, padding, padding);
         } else {
             imageView = (ImageView) convertView;
         }
 
-        StoryGson story = new GsonBuilder().create().fromJson(Utils.loadJSONFromAsset(mContext, stories[position]), StoryGson.class);
-        String thumbResName = story.getThubmnail();
-        List<Resource> resources = story.getResources();
+        Log.d(TAG, "stories[position]: " + stories.get(position));
+//        final Story story = new GsonBuilder().create().fromJson(Utils.loadJSONFromAsset(mContext, stories[position]), Story.class);
+        final Story story = stories.elementAt(position);
+        final String thumbnailResourceId = story.getThumbnail();
+        final Resource thumbnailResource = story.getResourceById(thumbnailResourceId);
 
-        int resPos = -1;
-        for (Resource res : resources) {
-            if (res.getId().equals(thumbResName)) {
-                resPos = resources.indexOf(res);
-            }
-        }
+        final String thumbnailSourceUrl = thumbnailResource.getSource();
 
-        String imgUrl = story.getResources().get(resPos).getSource();
-
-        new DownloadImageTask(imageView)
-                .execute(imgUrl);
+        new DownloadImageTask(imageView).execute(thumbnailSourceUrl);
 
         return imageView;
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
+        ImageView imageView;
 
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
+        public DownloadImageTask(ImageView imageView) {
+            this.imageView = imageView;
         }
 
         protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
+            String url = urls[0];
+            Bitmap bitmap = null;
             try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
+                final InputStream inputStream = new java.net.URL(url).openStream();
+                bitmap = BitmapFactory.decodeStream(inputStream);
             } catch (Exception e) {
                 Log.e("Error", e.getMessage());
                 e.printStackTrace();
             }
-            return mIcon11;
+            return bitmap;
         }
 
         protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
+            imageView.setImageBitmap(result);
         }
     }
 

@@ -1,17 +1,21 @@
 
-package org.inspirecenter.bullying.Model;
+package org.inspirecenter.bullying.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Author {
+import java.io.Serializable;
+
+public class Author implements Serializable {
 
     @SerializedName("name")
     @Expose
     private String name;
+
     @SerializedName("contact")
     @Expose
     private String contact;
+
     @SerializedName("description")
     @Expose
     private String description;

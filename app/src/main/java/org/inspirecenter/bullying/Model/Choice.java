@@ -1,26 +1,33 @@
 
-package org.inspirecenter.bullying.Model;
+package org.inspirecenter.bullying.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Choice {
+import java.io.Serializable;
+
+public class Choice implements Serializable {
 
     @SerializedName("order")
     @Expose
     private Integer order;
+
     @SerializedName("prompt")
     @Expose
     private String prompt;
+
     @SerializedName("prompt-sound")
     @Expose
     private String promptSound;
+
     @SerializedName("score")
     @Expose
     private Integer score;
+
     @SerializedName("feedback")
     @Expose
     private String feedback;
+
     @SerializedName("feedback-sound")
     @Expose
     private String feedbackSound;

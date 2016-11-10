@@ -1,38 +1,49 @@
 
-package org.inspirecenter.bullying.Model;
+package org.inspirecenter.bullying.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class StoryGson {
+public class Story implements Serializable {
 
     @SerializedName("title")
     @Expose
     private String title;
+
     @SerializedName("copyright")
     @Expose
     private String copyright;
+
     @SerializedName("year")
     @Expose
     private Integer year;
+
     @SerializedName("url")
     @Expose
     private String url;
+
     @SerializedName("thumbnail")
     @Expose
     private String thubmnail;
+
     @SerializedName("authors")
     @Expose
     private List<Author> authors = new ArrayList<Author>();
+
     @SerializedName("resources")
     @Expose
     private List<Resource> resources = new ArrayList<Resource>();
+
     @SerializedName("interactions")
     @Expose
     private List<Interaction> interactions = new ArrayList<Interaction>();
+
     @SerializedName("scenes")
     @Expose
     private List<Scene> scenes = new ArrayList<Scene>();
@@ -94,17 +105,17 @@ public class StoryGson {
     }
 
     /**
-     * @return The thubmnail
+     * @return The thumbnail
      */
-    public String getThubmnail() {
+    public String getThumbnail() {
         return thubmnail;
     }
 
     /**
-     * @param thubmnail The thubmnail
+     * @param thumbnail The thumbnail
      */
-    public void setThubmnail(String thubmnail) {
-        this.thubmnail = thubmnail;
+    public void setThumbnail(String thumbnail) {
+        this.thubmnail = thumbnail;
     }
 
     /**
@@ -128,11 +139,22 @@ public class StoryGson {
         return resources;
     }
 
+    private Map<String,Resource> idToResourceMap = new HashMap<>();
+
     /**
      * @param resources The resources
      */
     public void setResources(List<Resource> resources) {
         this.resources = resources;
+    }
+
+    public Resource getResourceById(final String id) {
+        if(idToResourceMap.isEmpty()) {
+            for(final Resource resource : resources) {
+                idToResourceMap.put(resource.getId(), resource);
+            }
+        }
+        return idToResourceMap.get(id);
     }
 
     /**

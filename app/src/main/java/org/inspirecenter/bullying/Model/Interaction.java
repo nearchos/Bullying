@@ -1,23 +1,27 @@
 
-package org.inspirecenter.bullying.Model;
+package org.inspirecenter.bullying.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Interaction {
+public class Interaction implements Serializable {
 
     @SerializedName("id")
     @Expose
     private String id;
+
     @SerializedName("prompt")
     @Expose
     private String prompt;
+
     @SerializedName("audio-prompt")
     @Expose
     private String audioPrompt;
+
     @SerializedName("choices")
     @Expose
     private List<Choice> choices = new ArrayList<Choice>();
