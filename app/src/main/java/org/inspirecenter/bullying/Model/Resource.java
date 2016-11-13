@@ -16,6 +16,10 @@ public class Resource implements Serializable {
     @Expose
     private String type;
 
+    @SerializedName("extension")
+    @Expose
+    private String extension;
+
     @SerializedName("source")
     @Expose
     private String source;
@@ -54,6 +58,14 @@ public class Resource implements Serializable {
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
     }
 
     /**

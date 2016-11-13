@@ -1,12 +1,14 @@
 
 package org.inspirecenter.bullying.model;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class Step implements Serializable {
+public class Step implements Serializable, Comparable {
 
     @SerializedName("id")
     @Expose
@@ -170,4 +172,13 @@ public class Step implements Serializable {
         this.progression = progression;
     }
 
+    @Override
+    public int compareTo(@NonNull final Object other) {
+        if(other instanceof Step) {
+            final Step otherStep = (Step) other;
+            return order.compareTo(otherStep.getOrder());
+        } else {
+            throw new RuntimeException("Cannot compare this with non-instances of " + getClass());
+        }
+    }
 }

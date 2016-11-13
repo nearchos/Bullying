@@ -4,5 +4,12 @@
     <string name="submit_button_text">Submit Answer</string>
     <string name="choice_text">selection</string>
 
+    <string name="Please_switch_to_landscape_orientation">Please switch to landscape orientation</string>
+    <string name="Loading">Loading …</string>
+    <string name="Downloading_resources">Downloading resources … (%1$d of %2$d)</string>
+    <plurals name="Loading_resources">
+        <item quantity="one">Loading 1 resource…</item>
+        <item quantity="other">Loading %d resources…</item>
+    </plurals>
     <string name="Error_loading_story_files">Error loading story files</string>
 </resources>

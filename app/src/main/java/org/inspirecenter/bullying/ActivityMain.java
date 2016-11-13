@@ -58,7 +58,7 @@ public class ActivityMain extends AppCompatActivity {
 
                 Toast.makeText(ActivityMain.this, "Opening Story:" + position, Toast.LENGTH_SHORT).show();
 
-                final Intent intent = new Intent(ActivityMain.this, StepActivity.class);
+                final Intent intent = new Intent(ActivityMain.this, ActivityLoadResources.class);
                 intent.putExtra(Utils.STORY_SERIALIZED, stories.elementAt(position));
                 startActivity(intent);
             }

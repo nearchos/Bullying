@@ -12,6 +12,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class Story implements Serializable {
 
+    @SerializedName("id")
+    @Expose
+    private String id;
+
     @SerializedName("title")
     @Expose
     private String title;
@@ -47,6 +51,14 @@ public class Story implements Serializable {
     @SerializedName("scenes")
     @Expose
     private List<Scene> scenes = new ArrayList<Scene>();
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     /**
      * @return The title

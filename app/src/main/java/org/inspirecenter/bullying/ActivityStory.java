@@ -1,15 +1,21 @@
 package org.inspirecenter.bullying;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.inspirecenter.bullying.model.Choice;
+import org.inspirecenter.bullying.model.Resource;
 import org.inspirecenter.bullying.model.Story;
 
 import java.util.List;
@@ -21,7 +27,7 @@ import butterknife.ButterKnife;
  * @author Salah Eddin Alshaal
  * @author Nearchos Paspallis
  */
-public class StepActivity extends AppCompatActivity {
+public class ActivityStory extends Activity {
 
     // story Model
     Story story = null;
@@ -53,8 +59,8 @@ public class StepActivity extends AppCompatActivity {
     Button Opt4Desc;
 
     // background
-    @BindView(R.id.BackgroundImageView)
-    ImageView BgImg;
+    @BindView(R.id.activity_story)
+    LinearLayout content;
 
     // submit Button
     @BindView(R.id.SubmitButton)
@@ -66,7 +72,7 @@ public class StepActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_step);
+        setContentView(R.layout.activity_story);
 
         ButterKnife.bind(this);
 
@@ -80,6 +86,11 @@ public class StepActivity extends AppCompatActivity {
 
         final Intent intent = getIntent();
         this.story = (Story) intent.getSerializableExtra(Utils.STORY_SERIALIZED);
+
+        final Resource backgroundResource = story.getResourceById(story.getScenes().get(0).getBackground());
+        final byte [] data = Utils.getResourceFromCache(this, story.getId(), backgroundResource);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+        content.setBackground(new BitmapDrawable(getResources(), bitmap));
 
         // download resources
         ResourceManager resourceManager = new ResourceManager(this);

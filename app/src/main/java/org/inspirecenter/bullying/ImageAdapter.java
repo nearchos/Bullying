@@ -3,6 +3,7 @@ package org.inspirecenter.bullying;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
@@ -14,8 +15,12 @@ import android.widget.ImageView;
 import org.inspirecenter.bullying.model.Resource;
 import org.inspirecenter.bullying.model.Story;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Vector;
+
+import static org.inspirecenter.bullying.ActivityLoadResources.BUFFER_SIZE;
 
 /**
  * @author Salah Eddin Alshaal
@@ -64,34 +69,54 @@ class ImageAdapter extends BaseAdapter {
         }
 
         Log.d(TAG, "stories[position]: " + stories.get(position));
-//        final Story story = new GsonBuilder().create().fromJson(Utils.loadJSONFromAsset(mContext, stories[position]), Story.class);
+
         final Story story = stories.elementAt(position);
         final String thumbnailResourceId = story.getThumbnail();
         final Resource thumbnailResource = story.getResourceById(thumbnailResourceId);
 
-        final String thumbnailSourceUrl = thumbnailResource.getSource();
+        if(Utils.hasResourceInCache(mContext, story.getId(), thumbnailResource)) {
+            final byte [] data = Utils.getResourceFromCache(mContext, story.getId(), thumbnailResource);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            imageView.setImageBitmap(bitmap);
 
-        new DownloadImageTask(imageView).execute(thumbnailSourceUrl);
+        } else {
+            new DownloadImageTask(thumbnailResource, imageView).execute(story.getId(), thumbnailResource.getSource());
+        }
 
         return imageView;
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView imageView;
+        private Resource resource;
+        private ImageView imageView;
 
-        public DownloadImageTask(ImageView imageView) {
+        DownloadImageTask(final Resource resource, final ImageView imageView) {
+            this.resource = resource;
             this.imageView = imageView;
         }
 
-        protected Bitmap doInBackground(String... urls) {
-            String url = urls[0];
+        protected Bitmap doInBackground(String... params) {
+            String storyId = params[0];
+            String url = params[1];
             Bitmap bitmap = null;
             try {
-                final InputStream inputStream = new java.net.URL(url).openStream();
-                bitmap = BitmapFactory.decodeStream(inputStream);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
+                {
+                    final InputStream inputStream = new java.net.URL(url).openStream();
+                    final byte[] data = new byte[BUFFER_SIZE];
+                    final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                    int nRead;
+                    while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+                        buffer.write(data, 0, nRead);
+                    }
+                    buffer.flush();
+                    Utils.saveResourceInCache(mContext, storyId, resource, buffer.toByteArray());
+                }
+                {
+                    final byte[] data = Utils.getResourceFromCache(mContext, storyId, resource);
+                    bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                }
+            } catch (IOException ioe) {
+                Log.e("Error", "I/O error while downloading and caching resource: " + ioe.getMessage());
             }
             return bitmap;
         }
@@ -100,5 +125,4 @@ class ImageAdapter extends BaseAdapter {
             imageView.setImageBitmap(result);
         }
     }
-
 }

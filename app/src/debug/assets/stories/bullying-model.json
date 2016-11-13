@@ -1,4 +1,5 @@
 {
+  "id" : "bullying-episode-intro",
   "title": "First day at school",
   "copyright": "Inspire Research Centre",
   "year": 2016,
@@ -30,13 +31,15 @@
     {
       "id": "thumb-img",
       "type": "image",
-      "source": "http://bullying.aspectsense.com/thumb.jpg",
+      "extension": "png",
+      "source": "http://bullying.aspectsense.com/thumb.png",
       "buffered": true,
       "alt": "The thumbnail for the story 512x512"
     },
     {
       "id": "school-img",
       "type": "image",
+      "extension": "jpg",
       "source": "http://bullying.aspectsense.com/school.jpg",
       "buffered": true,
       "alt": "A clipart background of a school"
@@ -44,6 +47,7 @@
     {
       "id": "playground-snd",
       "type": "audio",
+      "extension": "mp3",
       "source": "http://bullying.aspectsense.com/playgroud.mp3",
       "buffered": true,
       "alt": "Kids' playground soundtrack"
@@ -51,13 +55,15 @@
     {
       "id": "what-snd",
       "type": "audio",
-      "source": "http://bullying.aspectsense.com/what.mp3",
+      "extension": "wav",
+      "source": "http://bullying.aspectsense.com/what.wav",
       "buffered": true,
       "alt": "Man grunts"
     },
     {
       "id": "grunt-snd",
       "type": "audio",
+      "extension": "mp3",
       "source": "http://bullying.aspectsense.com/grunt.mp3",
       "buffered": true,
       "alt": "Man grunts"
@@ -65,6 +71,7 @@
     {
       "id": "cheering-snd",
       "type": "audio",
+      "extension": "mp3",
       "source": "http://bullying.aspectsense.com/cheering.mp3",
       "buffered": true,
       "alt": "People cheering"
@@ -72,13 +79,15 @@
     {
       "id": "carry_on-snd",
       "type": "audio",
-      "source": "http://bullying.aspectsense.com/he_will_carry_on_as_usual.mp3",
+      "extension": "wav",
+      "source": "http://bullying.aspectsense.com/he_will_carry_on_as_usual.wav",
       "buffered": true,
       "alt": "People cheering"
     },
     {
       "id": "sample-vid",
       "type": "video",
+      "extension": "mp4",
       "source": "http://bullying.aspectsense.com/sample.mp4",
       "buffered": true,
       "alt": "Just a sample video"
