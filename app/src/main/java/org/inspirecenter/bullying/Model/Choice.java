@@ -1,12 +1,14 @@
 
 package org.inspirecenter.bullying.model;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class Choice implements Serializable {
+public class Choice implements Serializable, Comparable {
 
     @SerializedName("order")
     @Expose
@@ -116,4 +118,13 @@ public class Choice implements Serializable {
         this.feedbackSound = feedbackSound;
     }
 
+    @Override
+    public int compareTo(@NonNull Object other) {
+        if(other instanceof Choice) {
+            final Choice otherChoice = (Choice) other;
+            return order.compareTo(otherChoice.order);
+        } else {
+            throw new RuntimeException("Cannot compare this with non-instances of " + getClass());
+        }
+    }
 }

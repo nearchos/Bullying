@@ -12,4 +12,6 @@
         <item quantity="other">Loading %d resources…</item>
     </plurals>
     <string name="Error_loading_story_files">Error loading story files</string>
+    <string name="Show_options">Show options</string>
+    <string name="Hide_options">Hide options</string>
 </resources>

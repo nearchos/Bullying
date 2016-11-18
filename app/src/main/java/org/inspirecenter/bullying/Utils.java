@@ -88,4 +88,8 @@ class Utils {
             return null;
         }
     }
+
+    static String getResourcePath(final Context context, final String storyId, final Resource resource) {
+        return context.getFilesDir() + File.separator + getFileName(storyId, resource);
+    }
 }

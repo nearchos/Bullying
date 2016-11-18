@@ -95,12 +95,12 @@
   ],
   "interactions": [
     {
-      "id": "interaction-1",
+      "id": "interaction-0",
       "prompt": "What do you think Andreas will do next?",
       "audio-prompt": "what-snd",
       "choices": [
         {
-          "order": 1,
+          "order": 0,
           "prompt": "He will carry on as usual",
           "prompt-sound": "carry_on-snd",
           "score": -1,
@@ -108,21 +108,21 @@
           "feedback-sound": "grunt-snd"
         },
         {
-          "order": 2,
+          "order": 1,
           "prompt": "He will be glad he doesn't 'have' to play with his classmates",
           "score": -1,
           "feedback": "Not really. Andreas is not happy with his classmates' behaviour and this makes him feel very sad the rest of the day",
           "feedback-sound": "grunt-snd"
         },
         {
-          "order": 3,
+          "order": 2,
           "prompt": "He will be sad for the rest of the day",
           "score": 3,
           "feedback": "Correct, Andreas is saddened by his classmates' behaviour and avoids contact with them in the future",
           "feedback-sound": "cheering-snd"
         },
         {
-          "order": 4,
+          "order": 3,
           "prompt": "He understands that it was his mistake and carries on his day",
           "score": -1,
           "feedback": "No it wasn't Andreas' fault. He is unhappy with his classmates' behaviour and this makes him feel very sad the rest of the day.",
@@ -133,28 +133,29 @@
   ],
   "scenes": [
     {
-      "id": "scene1",
+      "id": "scene-0",
+      "order": 0,
       "description": "Andreas shows up in school in his first day, and other students are less than welcoming",
       "background": "school-img",
       "soundtrack": "playground-snd",
       "steps": [
         {
-          "id": "step1-1",
-          "order": 1,
+          "id": "step0-0",
+          "order": 0,
           "action": "video",
-          "resource-id": "video1",
-          "transition-in": "fade in",
+          "resource-id": "sample-vid",
+          "transition-in": "fade-in",
           "delay-in": 200,
           "transition-out": "disappear",
           "delay-out": 0,
           "progression": "automatic"
         },
         {
-          "id": "step1-2",
-          "order": 2,
+          "id": "step0-1",
+          "order": 1,
           "action": "interaction",
-          "resource-id": "interaction-1",
-          "transition-in": "fade in",
+          "resource-id": "interaction-0",
+          "transition-in": "fade-in",
           "delay-in": 0,
           "transition-out": "disappear",
           "delay-out": 0,

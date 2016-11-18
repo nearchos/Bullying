@@ -181,4 +181,9 @@ public class Step implements Serializable, Comparable {
             throw new RuntimeException("Cannot compare this with non-instances of " + getClass());
         }
     }
+
+    @Override
+    public String toString() {
+        return getId() + "(" + getAction() + "->" + getResourceId() + ")";
+    }
 }

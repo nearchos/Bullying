@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_story"
+    android:id="@+id/activity_story_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorAccent"
@@ -9,120 +9,65 @@
     tools:context="org.inspirecenter.bullying.ActivityStory">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="5"
-        android:orientation="vertical">
+        android:id="@+id/video_container"
+        android:padding="16dp"
+        android:background="@color/colorPrimary"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/StepTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/loading"
-            android:textAlignment="center" />
+        <VideoView
+            android:id="@+id/video_view"
+            android:layout_width="320dp"
+            android:layout_height="240dp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
+    </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:id="@+id/Opt1Rb"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <Button
-                        android:id="@+id/Opt1Desc"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:drawableRight="@drawable/ic_volume"
-                        android:text="@string/choice_text" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:id="@+id/Opt2Rb"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <Button
-                        android:id="@+id/Opt2Desc"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:drawableRight="@drawable/ic_volume"
-                        android:text="@string/choice_text" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:id="@+id/Opt3Rb"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <Button
-                        android:id="@+id/Opt3Desc"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:drawableRight="@drawable/ic_volume"
-                        android:text="@string/choice_text" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:id="@+id/Opt4Rb"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <Button
-                        android:id="@+id/Opt4Desc"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:drawableRight="@drawable/ic_volume"
-                        android:text="@string/choice_text" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
+    <LinearLayout
+        android:id="@+id/show_options"
+        android:orientation="vertical"
+        android:background="@color/colorPrimaryDark"
+        android:animateLayoutChanges="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_width="@dimen/options_panel_width"
+        android:layout_height="48dp">
 
         <Button
-            android:id="@+id/SubmitButton"
+            android:text="@string/Show_options"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="60dp"
-            android:layout_marginStart="60dp"
-            android:text="@string/submit_button_text" />
+            android:onClick="showOptions"
+            style="@android:style/Widget.Holo.Button.Borderless"/>
+
     </LinearLayout>
-</LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/hide_options"
+        android:orientation="vertical"
+        android:background="@color/colorPrimaryDark"
+        android:animateLayoutChanges="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:visibility="invisible"
+        android:layout_width="@dimen/options_panel_width"
+        android:layout_height="match_parent">
+
+        <Button
+            android:text="@string/Hide_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="hideOptions"
+            style="@android:style/Widget.Holo.Button.Borderless"/>
+
+        <ListView
+            android:id="@+id/activity_story_options_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

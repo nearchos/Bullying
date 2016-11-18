@@ -1,18 +1,26 @@
 
 package org.inspirecenter.bullying.model;
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Vector;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Scene implements Serializable {
+public class Scene implements Serializable, Comparable {
 
     @SerializedName("id")
     @Expose
     private String id;
+
+    @SerializedName("order")
+    @Expose
+    private Integer order;
 
     @SerializedName("description")
     @Expose
@@ -42,6 +50,14 @@ public class Scene implements Serializable {
      */
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
     }
 
     /**
@@ -93,6 +109,13 @@ public class Scene implements Serializable {
         return steps;
     }
 
+    public Vector<Step> getOrderedSteps() {
+        final Vector<Step> steps= new Vector<>();
+        steps.addAll(this.steps);
+        Collections.sort(steps);
+        return steps;
+    }
+
     /**
      * @param steps The steps
      */
@@ -100,4 +123,13 @@ public class Scene implements Serializable {
         this.steps = steps;
     }
 
+    @Override
+    public int compareTo(@NonNull Object other) {
+        if(other instanceof Scene) {
+            final Scene otherScene = (Scene) other;
+            return order.compareTo(otherScene.order);
+        } else {
+            throw new RuntimeException("Cannot compare this with non-instances of " + getClass());
+        }
+    }
 }

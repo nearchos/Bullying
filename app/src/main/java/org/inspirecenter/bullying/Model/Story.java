@@ -3,9 +3,11 @@ package org.inspirecenter.bullying.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -187,6 +189,13 @@ public class Story implements Serializable {
      * @return The scenes
      */
     public List<Scene> getScenes() {
+        return scenes;
+    }
+
+    public Vector<Scene> getOrderedScenes() {
+        final Vector<Scene> scenes = new Vector<>();
+        scenes.addAll(this.scenes);
+        Collections.sort(scenes);
         return scenes;
     }
 
