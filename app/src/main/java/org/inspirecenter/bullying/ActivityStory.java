@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.MediaController;
@@ -28,6 +29,10 @@ import java.util.Vector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+
 /**
  * @author Salah Eddin Alshaal
  * @author Nearchos Paspallis
@@ -43,8 +48,17 @@ public class ActivityStory extends Activity {
     @BindView(R.id.activity_story_content)
     RelativeLayout content;
 
+    @BindView(R.id.video_container)
+    RelativeLayout videoContainer;
+
     @BindView(R.id.video_view)
     VideoView videoView;
+
+    @BindView(R.id.video_play_pause_repeat)
+    ImageButton videoPlayPauseRepeatButton;
+
+    @BindView(R.id.video_close)
+    ImageButton videoCloseButton;
 
     private MediaController mediaController;
 
@@ -70,13 +84,12 @@ public class ActivityStory extends Activity {
 
         mediaController = new MediaController(this);
         mediaController.setMediaPlayer(videoView);
-        videoView.setMediaController(mediaController);
 
         // initially, make all UI invisible
-        videoView.setVisibility(View.GONE);
-        showOptions.setVisibility(View.GONE);
-        hideOptions.setVisibility(View.GONE);
-        optionsListView.setVisibility(View.GONE);
+        videoView.setVisibility(GONE);
+        showOptions.setVisibility(GONE);
+        hideOptions.setVisibility(GONE);
+        optionsListView.setVisibility(GONE);
 
         preferences = getPreferences(MODE_PRIVATE);
 
@@ -146,7 +159,8 @@ public class ActivityStory extends Activity {
             case "video":
                 Log.d(TAG, "Starting step: " + step);
                 // prepare UI
-                videoView.setVisibility(View.VISIBLE);
+                videoContainer.setVisibility(VISIBLE);
+                videoView.setVisibility(VISIBLE);
 
                 // play video resource
                 final String videoId = step.getResourceId();
@@ -154,11 +168,17 @@ public class ActivityStory extends Activity {
                 final String videoPath = Utils.getResourcePath(this, story.getId(), videoResource);
                 videoView.setVideoPath(videoPath);
                 videoView.requestFocus();
+                videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override public void onCompletion(MediaPlayer mediaPlayer) {
+                        videoPlayPauseRepeatButton.setImageResource(R.drawable.ic_replay_white_24dp);
+                    }
+                });
                 videoView.start();
 
                 break;
 
             case "interaction":
+                //todo
                 break;
 
             default:
@@ -171,16 +191,30 @@ public class ActivityStory extends Activity {
 
     }
 
+    public void videoPlayPauseRepeat(final View view) {
+        if(videoView.isPlaying()) {
+            videoView.pause();
+            videoPlayPauseRepeatButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+        } else {
+            videoView.start();
+            videoPlayPauseRepeatButton.setImageResource(R.drawable.ic_pause_white_24dp);
+        }
+    }
+
+    public void videoClose(final View view) {
+        videoContainer.setVisibility(GONE);
+    }
+
     public void showOptions(final View view) {
         Toast.makeText(this, "show", Toast.LENGTH_SHORT).show();
-        showOptions.setVisibility(View.INVISIBLE);
-        hideOptions.setVisibility(View.VISIBLE);
+        showOptions.setVisibility(INVISIBLE);
+        hideOptions.setVisibility(VISIBLE);
     }
 
     public void hideOptions(final View view) {
         Toast.makeText(this, "hide", Toast.LENGTH_SHORT).show();
-        showOptions.setVisibility(View.VISIBLE);
-        hideOptions.setVisibility(View.INVISIBLE);
+        showOptions.setVisibility(VISIBLE);
+        hideOptions.setVisibility(INVISIBLE);
     }
 
     private class Player {
