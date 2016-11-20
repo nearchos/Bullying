@@ -12,7 +12,7 @@ import java.util.Vector;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Scene implements Serializable, Comparable {
+public class Scene implements Serializable, Comparable, TimelineElement {
 
     @SerializedName("id")
     @Expose
@@ -21,6 +21,10 @@ public class Scene implements Serializable, Comparable {
     @SerializedName("order")
     @Expose
     private Integer order;
+
+    @SerializedName("title")
+    @Expose
+    private String title;
 
     @SerializedName("description")
     @Expose
@@ -58,6 +62,14 @@ public class Scene implements Serializable, Comparable {
 
     public void setOrder(Integer order) {
         this.order = order;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     /**

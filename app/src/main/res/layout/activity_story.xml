@@ -9,6 +9,59 @@
     tools:context="org.inspirecenter.bullying.ActivityStory">
 
     <RelativeLayout
+        android:id="@+id/dialog_container"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/brightBlue"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="@dimen/video_panel_width"
+        android:layout_height="@dimen/video_panel_heigth">
+
+        <TextView
+            android:id="@+id/dialog_title"
+            android:text="Title"
+            android:textSize="@dimen/dialog_title_text_size"
+            android:layout_margin="16dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ScrollView
+            android:layout_below="@id/dialog_title"
+            android:layout_margin="16dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/dialog_message"
+                android:text="Message"
+                android:textSize="@dimen/dialog_message_text_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </ScrollView>
+
+        <ImageButton
+            android:id="@+id/dialog_close"
+            android:contentDescription="@string/app_name"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="dialogClose"
+            android:src="@drawable/ic_close_white_24dp"
+            style="@android:style/Widget.Holo.Button.Borderless"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/video_container"
         android:orientation="vertical"
         android:padding="16dp"
@@ -21,8 +74,8 @@
         <VideoView
             android:id="@+id/video_view"
             android:layout_alignParentTop="true"
-            android:layout_width="320dp"
-            android:layout_height="240dp" />
+            android:layout_width="@dimen/video_panel_width"
+            android:layout_height="@dimen/video_panel_heigth" />
 
         <ImageButton
             android:id="@+id/video_play_pause_repeat"
@@ -56,7 +109,7 @@
 
     </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/show_options"
         android:orientation="vertical"
         android:background="@color/brightBlue"
@@ -65,7 +118,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_width="@dimen/options_panel_width"
-        android:layout_height="48dp">
+        android:layout_height="wrap_content">
 
         <Button
             android:text="@string/Show_options"
@@ -74,9 +127,9 @@
             android:onClick="showOptions"
             style="@android:style/Widget.Holo.Button.Borderless"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/hide_options"
         android:orientation="vertical"
         android:background="@color/brightBlue"
@@ -89,17 +142,21 @@
         android:layout_height="match_parent">
 
         <Button
+            android:id="@+id/activity_story_hide_options_button"
             android:text="@string/Hide_options"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:onClick="hideOptions"
             style="@android:style/Widget.Holo.Button.Borderless"/>
 
         <ListView
             android:id="@+id/activity_story_options_list_view"
+            android:layout_alignParentTop="true"
+            android:layout_above="@id/activity_story_hide_options_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -135,6 +135,7 @@
     {
       "id": "scene-0",
       "order": 0,
+      "title": "First day at school",
       "description": "Andreas shows up in school in his first day, and other students are less than welcoming",
       "background": "school-img",
       "soundtrack": "playground-snd",

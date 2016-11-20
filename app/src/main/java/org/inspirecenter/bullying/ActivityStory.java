@@ -11,10 +11,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.MediaController;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -22,6 +21,7 @@ import org.inspirecenter.bullying.model.Resource;
 import org.inspirecenter.bullying.model.Scene;
 import org.inspirecenter.bullying.model.Step;
 import org.inspirecenter.bullying.model.Story;
+import org.inspirecenter.bullying.model.TimelineElement;
 
 import java.io.IOException;
 import java.util.Vector;
@@ -41,12 +41,20 @@ public class ActivityStory extends Activity {
 
     public static final String TAG = "bullying.ActivityStory";
 
-    public static final String PREFERENCE_KEY_CURRENT_SCENE = "current-scene";
-    public static final String PREFERENCE_KEY_CURRENT_STEP  = "current-step";
+    public static final String PREFERENCE_KEY_CURRENT_TIMELINE  = "current-timeline";
 
     // background
     @BindView(R.id.activity_story_content)
     RelativeLayout content;
+
+    @BindView(R.id.dialog_container)
+    RelativeLayout dialogContainer;
+
+    @BindView(R.id.dialog_title)
+    TextView dialogTitleTextView;
+
+    @BindView(R.id.dialog_message)
+    TextView dialogMessageTextView;
 
     @BindView(R.id.video_container)
     RelativeLayout videoContainer;
@@ -60,13 +68,11 @@ public class ActivityStory extends Activity {
     @BindView(R.id.video_close)
     ImageButton videoCloseButton;
 
-    private MediaController mediaController;
-
     @BindView(R.id.show_options)
-    LinearLayout showOptions;
+    RelativeLayout showOptions;
 
     @BindView(R.id.hide_options)
-    LinearLayout hideOptions;
+    RelativeLayout hideOptions;
 
     @BindView(R.id.activity_story_options_list_view)
     ListView optionsListView;
@@ -81,15 +87,6 @@ public class ActivityStory extends Activity {
         setContentView(R.layout.activity_story);
 
         ButterKnife.bind(this);
-
-        mediaController = new MediaController(this);
-        mediaController.setMediaPlayer(videoView);
-
-        // initially, make all UI invisible
-        videoView.setVisibility(GONE);
-        showOptions.setVisibility(GONE);
-        hideOptions.setVisibility(GONE);
-        optionsListView.setVisibility(GONE);
 
         preferences = getPreferences(MODE_PRIVATE);
 
@@ -117,18 +114,7 @@ public class ActivityStory extends Activity {
 
     private MediaPlayer soundtrackMediaPlayer = new MediaPlayer();
 
-    private void startScene(final Story story, final Scene scene) {
-        // set background image - if needed
-        final String backgroundId = scene.getBackground();
-        if(backgroundId != null && !backgroundId.isEmpty()) {
-            final Resource backgroundResource = story.getResourceById(backgroundId);
-            final byte [] data = Utils.getResourceFromCache(this, story.getId(), backgroundResource);
-            assert data != null;
-            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-            content.setBackground(new BitmapDrawable(getResources(), bitmap));
-        }
-
-        // set background audio - if needed
+    private void playSoundtrack(final Story story, final Scene scene) {
         final String soundtrackId = scene.getSoundtrack();
         if(soundtrackId != null && !soundtrackId.isEmpty()) {
             final Resource soundtrackResource = story.getResourceById(soundtrackId);
@@ -149,46 +135,106 @@ public class ActivityStory extends Activity {
         }
     }
 
+    private void playScene(final Story story, final Scene scene) {
+
+        // set background image - if needed
+        final String backgroundId = scene.getBackground();
+        if(backgroundId != null && !backgroundId.isEmpty()) {
+            final Resource backgroundResource = story.getResourceById(backgroundId);
+            final byte [] data = Utils.getResourceFromCache(this, story.getId(), backgroundResource);
+            assert data != null;
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            content.setBackground(new BitmapDrawable(getResources(), bitmap));
+        }
+
+        // set background audio - if needed
+        playSoundtrack(story, scene);
+
+        // show dialog with title/description
+
+        // prepare UI
+        dialogContainer.setVisibility(VISIBLE);
+        videoContainer.setVisibility(GONE);
+        videoView.setVisibility(GONE);
+        showOptions.setVisibility(GONE);
+        hideOptions.setVisibility(GONE);
+        optionsListView.setVisibility(GONE);
+
+        dialogTitleTextView.setText(scene.getTitle());
+        dialogMessageTextView.setText(scene.getDescription());
+    }
+
     private void stopScene() {
         soundtrackMediaPlayer.reset();
     }
 
-    private void startStep(final Story story, final Scene scene, final Step step) {
+    private void playStep(final Story story, final Step step) {
+
+        Log.d(TAG, "Starting step: " + step);
 
         switch (step.getAction()) {
             case "video":
-                Log.d(TAG, "Starting step: " + step);
+            {
                 // prepare UI
+                dialogContainer.setVisibility(INVISIBLE);
                 videoContainer.setVisibility(VISIBLE);
                 videoView.setVisibility(VISIBLE);
+                showOptions.setVisibility(INVISIBLE);
+                hideOptions.setVisibility(INVISIBLE);
+
+                // pause soundtrack
+                soundtrackMediaPlayer.pause();
 
                 // play video resource
                 final String videoId = step.getResourceId();
                 final Resource videoResource = story.getResourceById(videoId);
                 final String videoPath = Utils.getResourcePath(this, story.getId(), videoResource);
+                final boolean isProgressionAutomatic = "automatic".equalsIgnoreCase(step.getProgression());
                 videoView.setVideoPath(videoPath);
                 videoView.requestFocus();
                 videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override public void onCompletion(MediaPlayer mediaPlayer) {
                         videoPlayPauseRepeatButton.setImageResource(R.drawable.ic_replay_white_24dp);
+                        if(isProgressionAutomatic) {
+                            soundtrackMediaPlayer.start();
+                            player.progress();
+                        }
                     }
                 });
                 videoView.start();
 
                 break;
-
+            }
             case "interaction":
-                //todo
-                break;
+            {
+                // prepare UI
+                dialogContainer.setVisibility(INVISIBLE);
+                showOptions.setVisibility(VISIBLE);
+                hideOptions.setVisibility(INVISIBLE);
+                videoContainer.setVisibility(INVISIBLE);
+                videoView.setVisibility(INVISIBLE);
 
+                // resume soundtrack if there
+                if(!soundtrackMediaPlayer.isPlaying()) soundtrackMediaPlayer.start();
+
+                //todo
+
+                break;
+            }
             default:
+            {
                 Log.e(TAG, "Unknown step action: " + step.getAction());
                 throw new RuntimeException("Unknown step action: " + step.getAction());
+            }
         }
     }
 
     private void stopStep() {
-
+        // if playing video, then stop
+        if(videoView.isPlaying()) {
+            videoView.pause();
+            videoPlayPauseRepeatButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+        }
     }
 
     public void videoPlayPauseRepeat(final View view) {
@@ -201,8 +247,14 @@ public class ActivityStory extends Activity {
         }
     }
 
+    public void dialogClose(final View view) {
+        dialogContainer.setVisibility(GONE);
+        player.progress();
+    }
+
     public void videoClose(final View view) {
         videoContainer.setVisibility(GONE);
+        player.progress();
     }
 
     public void showOptions(final View view) {
@@ -220,41 +272,57 @@ public class ActivityStory extends Activity {
     private class Player {
 
         private final Story story;
-        private final Vector<Scene> orderedScenes;
-        private final Vector<Step> orderedSteps = new Vector<>();
-        private int currentSceneIndex;
-        private int currentStepIndex;
+
+        private Vector<TimelineElement> timeline;
+        private int timelineIndex;
 
         private Player(final Story story) {
             this.story = story;
-            this.orderedScenes = story.getOrderedScenes();
+            this.timeline = new Vector<>();
         }
 
         private void load() {
-            currentSceneIndex = preferences.getInt(PREFERENCE_KEY_CURRENT_SCENE, 0);
-            currentSceneIndex = preferences.getInt(PREFERENCE_KEY_CURRENT_STEP, 0);
-        }
-
-        private void save() {
-            preferences.edit().putInt(PREFERENCE_KEY_CURRENT_SCENE, currentSceneIndex).apply();
-            preferences.edit().putInt(PREFERENCE_KEY_CURRENT_STEP, currentStepIndex).apply();
+            final Vector<Scene> orderedScenes = story.getOrderedScenes();
+            for(final Scene scene : orderedScenes) {
+                timeline.add(scene);
+                final Vector<Step> orderedSteps = scene.getOrderedSteps();
+                for(final Step step : orderedSteps) {
+                    timeline.add(step);
+                }
+            }
+            timelineIndex = preferences.getInt(PREFERENCE_KEY_CURRENT_TIMELINE, 0);
         }
 
         private void resume() {
-            // setup scene
-            final Scene currentScene = orderedScenes.elementAt(currentSceneIndex);
-            startScene(story, currentScene);
-
-            // select and play step
-            orderedSteps.clear();
-            orderedSteps.addAll(currentScene.getOrderedSteps());
-            final Step currentStep = orderedSteps.elementAt(currentStepIndex);
-            startStep(story, currentScene, currentStep);
+            if(timelineIndex < timeline.size()) {
+                final TimelineElement timelineElement = timeline.elementAt(timelineIndex);
+                if(timelineElement instanceof Scene) {
+                    playScene(story, (Scene) timelineElement);
+                } else if(timelineElement instanceof Step) {
+                    playStep(story, (Step) timelineElement);
+                } else {
+                    // this should never happen
+                    throw new RuntimeException("Unkown timeline element: " + timelineElement);
+                }
+            } else {
+                // we reached the end of the scene
+                // todo
+                finish();
+            }
         }
 
         private void pause() {
             stopStep();
             stopScene();
+        }
+
+        private void save() {
+            preferences.edit().putInt(PREFERENCE_KEY_CURRENT_TIMELINE, timelineIndex).apply();
+        }
+
+        private void progress() {
+            timelineIndex++;
+            resume();
         }
     }
 }

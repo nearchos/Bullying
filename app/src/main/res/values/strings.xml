@@ -3,6 +3,7 @@
     <string name="loading">Please Wait</string>
     <string name="submit_button_text">Submit Answer</string>
     <string name="choice_text">selection</string>
+    <string name="Ok">Ok</string>
 
     <string name="Please_switch_to_landscape_orientation">Please switch to landscape orientation</string>
     <string name="Loading">Loading …</string>

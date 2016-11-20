@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class Step implements Serializable, Comparable {
+public class Step implements Serializable, Comparable, TimelineElement {
 
     @SerializedName("id")
     @Expose
