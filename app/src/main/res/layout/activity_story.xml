@@ -150,6 +150,14 @@
             android:onClick="hideOptions"
             style="@android:style/Widget.Holo.Button.Borderless"/>
 
+        <View
+            android:background="@color/colorAccent"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_above="@id/activity_story_hide_options_button"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
         <ListView
             android:id="@+id/activity_story_options_list_view"
             android:layout_alignParentTop="true"

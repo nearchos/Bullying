@@ -185,6 +185,18 @@ public class Story implements Serializable {
         this.interactions = interactions;
     }
 
+    private Map<String,Interaction> idToInteractionMap = new HashMap<>();
+
+    public Interaction getInteractionById(final String id) {
+        if(idToInteractionMap.isEmpty()) {
+            for(final Interaction interaction : interactions) {
+                idToInteractionMap.put(interaction.getId(), interaction);
+            }
+        }
+
+        return idToInteractionMap.get(id);
+    }
+
     /**
      * @return The scenes
      */

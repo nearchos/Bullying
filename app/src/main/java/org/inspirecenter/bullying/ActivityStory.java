@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -17,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import org.inspirecenter.bullying.model.Choice;
+import org.inspirecenter.bullying.model.Interaction;
 import org.inspirecenter.bullying.model.Resource;
 import org.inspirecenter.bullying.model.Scene;
 import org.inspirecenter.bullying.model.Step;
@@ -24,6 +27,7 @@ import org.inspirecenter.bullying.model.Story;
 import org.inspirecenter.bullying.model.TimelineElement;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Vector;
 
 import butterknife.BindView;
@@ -218,6 +222,9 @@ public class ActivityStory extends Activity {
                 if(!soundtrackMediaPlayer.isPlaying()) soundtrackMediaPlayer.start();
 
                 //todo
+                final Interaction interaction = story.getInteractionById(step.getResourceId());
+                final List<Choice> choices = interaction.getChoices();
+                optionsListView.setAdapter(new ChoiceAdapter(this, choices));
 
                 break;
             }
