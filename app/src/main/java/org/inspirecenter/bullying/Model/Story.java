@@ -46,6 +46,10 @@ public class Story implements Serializable {
     @Expose
     private List<Resource> resources = new ArrayList<Resource>();
 
+    @SerializedName("dialogs")
+    @Expose
+    private List<Dialog> dialogs = new ArrayList<Dialog>();
+
     @SerializedName("interactions")
     @Expose
     private List<Interaction> interactions = new ArrayList<Interaction>();
@@ -171,6 +175,25 @@ public class Story implements Serializable {
         return idToResourceMap.get(id);
     }
 
+    public List<Dialog> getDialogs() {
+        return dialogs;
+    }
+
+    public void setDialogs(List<Dialog> dialogs) {
+        this.dialogs = dialogs;
+    }
+
+    private Map<String,Dialog> idToDialogMap = new HashMap<>();
+
+    public Dialog getDialogById(final String id) {
+        if(idToDialogMap.isEmpty()) {
+            for(final Dialog dialog : dialogs) {
+                idToDialogMap.put(dialog.getId(), dialog);
+            }
+        }
+        return idToDialogMap.get(id);
+    }
+
     /**
      * @return The interactions
      */
@@ -209,6 +232,17 @@ public class Story implements Serializable {
         scenes.addAll(this.scenes);
         Collections.sort(scenes);
         return scenes;
+    }
+
+    private Map<String, Scene> idToSceneMap = new HashMap<>();
+
+    public Scene getSceneById(final String id) {
+        if(idToSceneMap.isEmpty()) {
+            for(final Scene scene : scenes) {
+                idToSceneMap.put(scene.getId(), scene);
+            }
+        }
+        return idToSceneMap.get(id);
     }
 
     /**

@@ -10,7 +10,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -19,15 +19,17 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import org.inspirecenter.bullying.model.Choice;
+import org.inspirecenter.bullying.model.Dialog;
 import org.inspirecenter.bullying.model.Interaction;
 import org.inspirecenter.bullying.model.Resource;
 import org.inspirecenter.bullying.model.Scene;
 import org.inspirecenter.bullying.model.Step;
 import org.inspirecenter.bullying.model.Story;
-import org.inspirecenter.bullying.model.TimelineElement;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import butterknife.BindView;
@@ -41,11 +43,12 @@ import static android.view.View.VISIBLE;
  * @author Salah Eddin Alshaal
  * @author Nearchos Paspallis
  */
-public class ActivityStory extends Activity {
+public class ActivityStory extends Activity implements AdapterView.OnItemClickListener {
 
     public static final String TAG = "bullying.ActivityStory";
 
-    public static final String PREFERENCE_KEY_CURRENT_TIMELINE  = "current-timeline";
+    public static final String PREFERENCE_KEY_CURRENT_SCENE_ID = "current-scene-id";
+    public static final String PREFERENCE_KEY_CURRENT_STEP_ID  = "current-step-id";
 
     // background
     @BindView(R.id.activity_story_content)
@@ -98,6 +101,8 @@ public class ActivityStory extends Activity {
         final Story story = (Story) intent.getSerializableExtra(Utils.STORY_SERIALIZED);
 
         player = new Player(story);
+
+        optionsListView.setOnItemClickListener(this);
     }
 
     @Override
@@ -139,8 +144,7 @@ public class ActivityStory extends Activity {
         }
     }
 
-    private void playScene(final Story story, final Scene scene) {
-
+    private void setupScene(final Story story, final Scene scene) {
         // set background image - if needed
         final String backgroundId = scene.getBackground();
         if(backgroundId != null && !backgroundId.isEmpty()) {
@@ -153,19 +157,6 @@ public class ActivityStory extends Activity {
 
         // set background audio - if needed
         playSoundtrack(story, scene);
-
-        // show dialog with title/description
-
-        // prepare UI
-        dialogContainer.setVisibility(VISIBLE);
-        videoContainer.setVisibility(GONE);
-        videoView.setVisibility(GONE);
-        showOptions.setVisibility(GONE);
-        hideOptions.setVisibility(GONE);
-        optionsListView.setVisibility(GONE);
-
-        dialogTitleTextView.setText(scene.getTitle());
-        dialogMessageTextView.setText(scene.getDescription());
     }
 
     private void stopScene() {
@@ -221,17 +212,34 @@ public class ActivityStory extends Activity {
                 // resume soundtrack if there
                 if(!soundtrackMediaPlayer.isPlaying()) soundtrackMediaPlayer.start();
 
-                //todo
+                selectedItem = null;
                 final Interaction interaction = story.getInteractionById(step.getResourceId());
                 final List<Choice> choices = interaction.getChoices();
-                optionsListView.setAdapter(new ChoiceAdapter(this, choices));
+                final ChoiceAdapter choiceAdapter = new ChoiceAdapter(this, choices);
+                optionsListView.setAdapter(choiceAdapter);
+
+                break;
+            }
+            case "dialog":
+            {
+                // prepare UI
+                dialogContainer.setVisibility(VISIBLE);
+                videoContainer.setVisibility(GONE);
+                videoView.setVisibility(GONE);
+                showOptions.setVisibility(GONE);
+                hideOptions.setVisibility(GONE);
+                optionsListView.setVisibility(GONE);
+
+                final Dialog dialog = story.getDialogById(step.getResourceId());
+                dialogTitleTextView.setText(dialog.getTitle());
+                dialogMessageTextView.setText(dialog.getMessage());
 
                 break;
             }
             default:
             {
-                Log.e(TAG, "Unknown step action: " + step.getAction());
-                throw new RuntimeException("Unknown step action: " + step.getAction());
+                Log.e(TAG, "Unknown step action: '" + step.getAction() + "'");
+                throw new RuntimeException("Unknown step action: '" + step.getAction() + "'");
             }
         }
     }
@@ -276,46 +284,58 @@ public class ActivityStory extends Activity {
         hideOptions.setVisibility(INVISIBLE);
     }
 
+    private View selectedItem = null;
+
+    /**
+     * Triggered when an option is selected in the options choice list-view.
+     */
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        Toast.makeText(this, "view.isSelected: " + view.isSelected() + ", position: " + position, Toast.LENGTH_SHORT).show();
+        if(selectedItem != null && selectedItem == view) {
+            view.setSelected(false);
+            Toast.makeText(this, "OK, choice done!", Toast.LENGTH_SHORT).show();
+//            todo
+        } else {
+            selectedItem = view;
+            view.setSelected(true);
+            Toast.makeText(this, R.string.Select_again_to_finalize_your_choice, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private class Player {
 
         private final Story story;
 
-        private Vector<TimelineElement> timeline;
-        private int timelineIndex;
+        private TreeMap<String, Vector<String>> orderedSceneIdToStepIdMap = new TreeMap<>();
+        private String currentSceneId;
+        private String currentStepId;
 
         private Player(final Story story) {
             this.story = story;
-            this.timeline = new Vector<>();
+            this.orderedSceneIdToStepIdMap.clear();
         }
 
         private void load() {
             final Vector<Scene> orderedScenes = story.getOrderedScenes();
             for(final Scene scene : orderedScenes) {
-                timeline.add(scene);
                 final Vector<Step> orderedSteps = scene.getOrderedSteps();
+                final Vector<String> stepTimeline = new Vector<>();
                 for(final Step step : orderedSteps) {
-                    timeline.add(step);
+                    stepTimeline.add(step.getId());
                 }
+                orderedSceneIdToStepIdMap.put(scene.getId(), stepTimeline);
             }
-            timelineIndex = preferences.getInt(PREFERENCE_KEY_CURRENT_TIMELINE, 0);
+            currentSceneId = preferences.getString(PREFERENCE_KEY_CURRENT_SCENE_ID, orderedScenes.firstElement().getId());
+            currentStepId  = preferences.getString(PREFERENCE_KEY_CURRENT_STEP_ID, orderedSceneIdToStepIdMap.get(currentSceneId).firstElement());
         }
 
         private void resume() {
-            if(timelineIndex < timeline.size()) {
-                final TimelineElement timelineElement = timeline.elementAt(timelineIndex);
-                if(timelineElement instanceof Scene) {
-                    playScene(story, (Scene) timelineElement);
-                } else if(timelineElement instanceof Step) {
-                    playStep(story, (Step) timelineElement);
-                } else {
-                    // this should never happen
-                    throw new RuntimeException("Unkown timeline element: " + timelineElement);
-                }
-            } else {
-                // we reached the end of the scene
-                // todo
-                finish();
-            }
+            final Scene currentScene = story.getSceneById(currentSceneId);
+            final Step currentStep = currentScene.getStepById(currentStepId);
+
+            setupScene(story, currentScene);
+            playStep(story, currentStep);
         }
 
         private void pause() {
@@ -324,11 +344,33 @@ public class ActivityStory extends Activity {
         }
 
         private void save() {
-            preferences.edit().putInt(PREFERENCE_KEY_CURRENT_TIMELINE, timelineIndex).apply();
+            preferences.edit().putString(PREFERENCE_KEY_CURRENT_SCENE_ID, currentSceneId).apply();
+            preferences.edit().putString(PREFERENCE_KEY_CURRENT_STEP_ID, currentStepId).apply();
         }
 
         private void progress() {
-            timelineIndex++;
+            final Scene currentScene = story.getSceneById(currentSceneId);
+            final Step currentStep = currentScene.getStepById(currentStepId);
+
+            // check if another step is available
+            final Vector<String> stepTimeline = orderedSceneIdToStepIdMap.get(currentSceneId);
+            final int currentStepIdIndex = stepTimeline.indexOf(currentStepId);
+            if(currentStepIdIndex < stepTimeline.size() - 1) {
+                // move to next step
+                currentStepId = stepTimeline.elementAt(currentStepIdIndex + 1);
+            } else {
+                // otherwise check if another scene is available
+                final String [] orderedSceneIds = new String[orderedSceneIdToStepIdMap.size()];
+                final int currentSceneIndex = Arrays.binarySearch(orderedSceneIds, currentSceneId);
+                if(currentSceneIndex < orderedSceneIdToStepIdMap.size() - 1) {
+                    currentSceneId = orderedSceneIds[currentSceneIndex + 1];
+                } else {
+                    // no more scenes...
+                    Toast.makeText(ActivityStory.this, "TODO SCENE(S) FINISHED", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+
             resume();
         }
     }

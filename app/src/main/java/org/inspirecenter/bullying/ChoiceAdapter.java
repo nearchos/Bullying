@@ -44,14 +44,18 @@ public class ChoiceAdapter extends ArrayAdapter<Choice> {
         final ImageButton audioImageButton = (ImageButton) convertView.findViewById(R.id.choice_list_item_audio);
         if(selectedChoice.getPromptSound() == null) {
             audioImageButton.setEnabled(false);
+            audioImageButton.setVisibility(View.INVISIBLE);
         } else {
             audioImageButton.setEnabled(true);
+            audioImageButton.setVisibility(View.INVISIBLE);
+            audioImageButton.setVisibility(View.VISIBLE);
             audioImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
                     // todo
                     Toast.makeText(getContext(), "TODO -> " + selectedChoice.getPrompt(), Toast.LENGTH_SHORT).show();
                 }
             });
+            audioImageButton.setFocusable(false);
         }
 
         final TextView optionMessage = (TextView) convertView.findViewById(R.id.choice_list_item_option_message);

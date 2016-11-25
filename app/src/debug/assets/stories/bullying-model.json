@@ -93,6 +93,13 @@
       "alt": "Just a sample video"
     }
   ],
+  "dialogs": [
+    {
+      "id": "dialog-0",
+      "title": "First day at school",
+      "message": "Andreas shows up in school in his first day, and other students are less than welcoming"
+    }
+  ],
   "interactions": [
     {
       "id": "interaction-0",
@@ -109,7 +116,7 @@
         },
         {
           "order": 1,
-          "prompt": "He will be glad he doesn't 'have' to play with his classmates",
+          "prompt": "He will be glad he doesn't 'have' to play with his classmates. And some more text to check what happens to the UI when a long sentence is specified.",
           "score": -1,
           "feedback": "Not really. Andreas is not happy with his classmates' behaviour and this makes him feel very sad the rest of the day",
           "feedback-sound": "grunt-snd"
@@ -135,14 +142,23 @@
     {
       "id": "scene-0",
       "order": 0,
-      "title": "First day at school",
-      "description": "Andreas shows up in school in his first day, and other students are less than welcoming",
       "background": "school-img",
       "soundtrack": "playground-snd",
       "steps": [
         {
           "id": "step0-0",
           "order": 0,
+          "action": "dialog",
+          "resource-id": "dialog-0",
+          "transition-in": "fade-in",
+          "delay-in": 200,
+          "transition-out": "disappear",
+          "delay-out": 0,
+          "progression": "click"
+        },
+        {
+          "id": "step0-1",
+          "order": 1,
           "action": "video",
           "resource-id": "sample-vid",
           "transition-in": "fade-in",
@@ -152,8 +168,8 @@
           "progression": "automatic"
         },
         {
-          "id": "step0-1",
-          "order": 1,
+          "id": "step0-2",
+          "order": 2,
           "action": "interaction",
           "resource-id": "interaction-0",
           "transition-in": "fade-in",

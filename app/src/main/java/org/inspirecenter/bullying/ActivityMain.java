@@ -1,6 +1,7 @@
 package org.inspirecenter.bullying;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -57,6 +58,10 @@ public class ActivityMain extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 
                 Toast.makeText(ActivityMain.this, "Opening Story:" + position, Toast.LENGTH_SHORT).show();
+
+                // todo remove reset command
+                SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+                sharedPreferences.edit().clear().apply();
 
                 final Intent intent = new Intent(ActivityMain.this, ActivityLoadResources.class);
                 intent.putExtra(Utils.STORY_SERIALIZED, stories.elementAt(position));

@@ -1,4 +1,3 @@
-
 package org.inspirecenter.bullying.model;
 
 import android.support.annotation.NonNull;
@@ -6,13 +5,15 @@ import android.support.annotation.NonNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Scene implements Serializable, Comparable, TimelineElement {
+public class Scene implements Serializable, Comparable {
 
     @SerializedName("id")
     @Expose
@@ -126,6 +127,17 @@ public class Scene implements Serializable, Comparable, TimelineElement {
         steps.addAll(this.steps);
         Collections.sort(steps);
         return steps;
+    }
+
+    private Map<String, Step> idToStepMap = new HashMap<>();
+
+    public Step getStepById(final String id) {
+        if(idToStepMap.isEmpty()) {
+            for(final Step step : steps) {
+                idToStepMap.put(step.getId(), step);
+            }
+        }
+        return idToStepMap.get(id);
     }
 
     /**
