@@ -1,9 +1,9 @@
 {
-  "id" : "bullying-episode-intro",
-  "title": "First day at school",
-  "description": "It's a first day at school and Allan's classmates are less than welcoming. Can you figure out how things could imrpove?",
+  "id" : "demo-model",
+  "title": "A demo interactive story",
+  "description": "A simple interactive story, demonstrating the capabilities of the platform",
   "copyright": "Inspire Research Centre",
-  "year": 2016,
+  "year": 2017,
   "url": "http://inspirecenter.org",
   "thumbnail": "thumb-img",
   "authors": [
@@ -11,28 +11,13 @@
       "name": "Nearchos Paspallis",
       "contact": "NPaspallis@uclan.ac.uk",
       "description": "Director"
-    },
-    {
-      "name": "Militsa Nikiforou",
-      "contact": "MNikiforou@uclan.ac.uk",
-      "description": "Script writer"
-    },
-    {
-      "name": "Salah Eddin Alshaal",
-      "contact": "SEAlshaal@uclan.ac.uk",
-      "description": "Programmer"
-    },
-    {
-      "name": "Anna Stylianidou",
-      "contact": "anniemated@gmail.com",
-      "description": "Artwork"
     }
   ],
   "resources": [
     {
       "id": "thumb-img",
       "type": "image",
-      "extension": "png",
+      "extension": "jpg",
       "source": "http://bullying.aspectsense.com/thumb.png",
       "buffered": true,
       "alt": "The thumbnail for the story 512x512"
@@ -94,21 +79,14 @@
       "alt": "Just a sample video"
     }
   ],
-  "dialogs": [
-    {
-      "id": "dialog-0",
-      "title": "First day at school",
-      "message": "Andreas shows up in school in his first day, and other students are less than welcoming"
-    }
-  ],
   "interactions": [
     {
-      "id": "interaction-0",
+      "id": "interaction-1",
       "prompt": "What do you think Andreas will do next?",
       "audio-prompt": "what-snd",
       "choices": [
         {
-          "order": 0,
+          "order": 1,
           "prompt": "He will carry on as usual",
           "prompt-sound": "carry_on-snd",
           "score": -1,
@@ -116,21 +94,21 @@
           "feedback-sound": "grunt-snd"
         },
         {
-          "order": 1,
-          "prompt": "He will be glad he doesn't 'have' to play with his classmates. And some more text to check what happens to the UI when a long sentence is specified.",
+          "order": 2,
+          "prompt": "He will be glad he doesn't 'have' to play with his classmates",
           "score": -1,
           "feedback": "Not really. Andreas is not happy with his classmates' behaviour and this makes him feel very sad the rest of the day",
           "feedback-sound": "grunt-snd"
         },
         {
-          "order": 2,
+          "order": 3,
           "prompt": "He will be sad for the rest of the day",
           "score": 3,
           "feedback": "Correct, Andreas is saddened by his classmates' behaviour and avoids contact with them in the future",
           "feedback-sound": "cheering-snd"
         },
         {
-          "order": 3,
+          "order": 4,
           "prompt": "He understands that it was his mistake and carries on his day",
           "score": -1,
           "feedback": "No it wasn't Andreas' fault. He is unhappy with his classmates' behaviour and this makes him feel very sad the rest of the day.",
@@ -141,39 +119,28 @@
   ],
   "scenes": [
     {
-      "id": "scene-0",
-      "order": 0,
+      "id": "scene1",
+      "description": "Andreas shows up in school in his first day, and other students are less than welcoming",
       "background": "school-img",
       "soundtrack": "playground-snd",
       "steps": [
         {
-          "id": "step0-0",
-          "order": 0,
-          "action": "dialog",
-          "resource-id": "dialog-0",
-          "transition-in": "fade-in",
-          "delay-in": 200,
-          "transition-out": "disappear",
-          "delay-out": 0,
-          "progression": "click"
-        },
-        {
-          "id": "step0-1",
+          "id": "step1-1",
           "order": 1,
           "action": "video",
-          "resource-id": "sample-vid",
-          "transition-in": "fade-in",
+          "resource-id": "video1",
+          "transition-in": "fade in",
           "delay-in": 200,
           "transition-out": "disappear",
           "delay-out": 0,
           "progression": "automatic"
         },
         {
-          "id": "step0-2",
+          "id": "step1-2",
           "order": 2,
           "action": "interaction",
-          "resource-id": "interaction-0",
-          "transition-in": "fade-in",
+          "resource-id": "interaction-1",
+          "transition-in": "fade in",
           "delay-in": 0,
           "transition-out": "disappear",
           "delay-out": 0,

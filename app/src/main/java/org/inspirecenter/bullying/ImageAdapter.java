@@ -29,7 +29,7 @@ import static org.inspirecenter.bullying.ActivityLoadResources.BUFFER_SIZE;
  */
 class ImageAdapter extends BaseAdapter {
 
-    public static final String TAG = "bullying.ImageAdapter";
+    private static final String TAG = "bullying.ImageAdapter";
 
     private Context mContext;
     private Vector<Story> stories;
@@ -78,7 +78,6 @@ class ImageAdapter extends BaseAdapter {
             final byte [] data = Utils.getResourceFromCache(mContext, story.getId(), thumbnailResource);
             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
             imageView.setImageBitmap(bitmap);
-
         } else {
             new DownloadImageTask(thumbnailResource, imageView).execute(story.getId(), thumbnailResource.getSource());
         }

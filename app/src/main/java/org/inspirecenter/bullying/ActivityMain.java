@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.GsonBuilder;
@@ -26,8 +26,8 @@ import butterknife.ButterKnife;
  */
 public class ActivityMain extends AppCompatActivity {
 
-    @BindView(R.id.storiesGridView)
-    GridView storiesGridView;
+    @BindView(R.id.activity_main_list_view)
+    ListView listView;
 
     private String [] storyFiles;
     private Vector<Story> stories = new Vector<>();
@@ -52,9 +52,9 @@ public class ActivityMain extends AppCompatActivity {
             stories.add(story);
         }
 
-        storiesGridView.setAdapter(new ImageAdapter(this, stories));
+        listView.setAdapter(new StoriesAdapter(this, stories));
 
-        storiesGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 
                 Toast.makeText(ActivityMain.this, "Opening Story:" + position, Toast.LENGTH_SHORT).show();

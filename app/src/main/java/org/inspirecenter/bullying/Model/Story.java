@@ -22,6 +22,10 @@ public class Story implements Serializable {
     @Expose
     private String title;
 
+    @SerializedName("description")
+    @Expose
+    private String description;
+
     @SerializedName("copyright")
     @Expose
     private String copyright;
@@ -78,6 +82,14 @@ public class Story implements Serializable {
      */
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**
