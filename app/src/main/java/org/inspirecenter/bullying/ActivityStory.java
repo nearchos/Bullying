@@ -2,7 +2,6 @@ package org.inspirecenter.bullying;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -23,13 +22,12 @@ import org.inspirecenter.bullying.model.Dialog;
 import org.inspirecenter.bullying.model.Interaction;
 import org.inspirecenter.bullying.model.Resource;
 import org.inspirecenter.bullying.model.Scene;
+import org.inspirecenter.bullying.model.State;
 import org.inspirecenter.bullying.model.Step;
 import org.inspirecenter.bullying.model.Story;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.TreeMap;
 import java.util.Vector;
 
 import butterknife.BindView;
@@ -46,9 +44,6 @@ import static android.view.View.VISIBLE;
 public class ActivityStory extends Activity implements AdapterView.OnItemClickListener {
 
     public static final String TAG = "bullying.ActivityStory";
-
-    public static final String PREFERENCE_KEY_CURRENT_SCENE_ID = "current-scene-id";
-    public static final String PREFERENCE_KEY_CURRENT_STEP_ID  = "current-step-id";
 
     // background
     @BindView(R.id.activity_story_content)
@@ -84,9 +79,10 @@ public class ActivityStory extends Activity implements AdapterView.OnItemClickLi
     @BindView(R.id.activity_story_options_list_view)
     ListView optionsListView;
 
-    private Player player;
+    @BindView(R.id.activity_story_state_text_view)
+    TextView stateTextView;
 
-    private SharedPreferences preferences;
+    private Player player;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,13 +91,8 @@ public class ActivityStory extends Activity implements AdapterView.OnItemClickLi
 
         ButterKnife.bind(this);
 
-        preferences = getPreferences(MODE_PRIVATE);
-
-        final Intent intent = getIntent();
-        final Story story = (Story) intent.getSerializableExtra(Utils.STORY_SERIALIZED);
-
-        player = new Player(story);
-
+        final ChoiceAdapter choiceAdapter = new ChoiceAdapter(this);
+        optionsListView.setAdapter(choiceAdapter);
         optionsListView.setOnItemClickListener(this);
     }
 
@@ -109,8 +100,13 @@ public class ActivityStory extends Activity implements AdapterView.OnItemClickLi
     protected void onResume() {
         super.onResume();
 
-        player.load();
-        player.resume();
+        handleIntent(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
     }
 
     @Override
@@ -119,6 +115,13 @@ public class ActivityStory extends Activity implements AdapterView.OnItemClickLi
 
         player.pause();
         player.save();
+    }
+
+    private void handleIntent(final Intent intent) {
+        final Story story = (Story) intent.getSerializableExtra(Utils.STORY_SERIALIZED);
+        player = new Player(story);
+        player.load();
+        player.resume();
     }
 
     private MediaPlayer soundtrackMediaPlayer = new MediaPlayer();
@@ -178,7 +181,7 @@ public class ActivityStory extends Activity implements AdapterView.OnItemClickLi
                 hideOptions.setVisibility(INVISIBLE);
 
                 // pause soundtrack
-                soundtrackMediaPlayer.pause();
+                soundtrackMediaPlayer.stop(); // todo understand why soundtrack doesn't stop when the video plays
 
                 // play video resource
                 final String videoId = step.getResourceId();
@@ -202,12 +205,18 @@ public class ActivityStory extends Activity implements AdapterView.OnItemClickLi
             }
             case "interaction":
             {
+                try {
+                    throw new Exception("interaction stack trace");
+                } catch (Exception e) {
+                    Log.e(TAG, "look!");
+                    e.printStackTrace();
+                }
                 // prepare UI
                 dialogContainer.setVisibility(INVISIBLE);
-                showOptions.setVisibility(VISIBLE);
-                hideOptions.setVisibility(INVISIBLE);
                 videoContainer.setVisibility(INVISIBLE);
                 videoView.setVisibility(INVISIBLE);
+                showOptions.setVisibility(INVISIBLE);
+                hideOptions.setVisibility(VISIBLE);
 
                 // resume soundtrack if there
                 if(!soundtrackMediaPlayer.isPlaying()) soundtrackMediaPlayer.start();
@@ -215,8 +224,13 @@ public class ActivityStory extends Activity implements AdapterView.OnItemClickLi
                 selectedItem = null;
                 final Interaction interaction = story.getInteractionById(step.getResourceId());
                 final List<Choice> choices = interaction.getChoices();
-                final ChoiceAdapter choiceAdapter = new ChoiceAdapter(this, choices);
-                optionsListView.setAdapter(choiceAdapter);
+                final ChoiceAdapter choiceAdapter = (ChoiceAdapter) optionsListView.getAdapter();
+                choiceAdapter.clear();
+                choiceAdapter.addAll(choices);
+Log.d(TAG, "setting vector choices: " + choices);//todo delete
+Log.d(TAG, "choiceAdapter.getCount(): " + choiceAdapter.getCount());//todo delete
+                choiceAdapter.notifyDataSetChanged();
+                optionsListView.postInvalidate();
 
                 break;
             }
@@ -273,13 +287,11 @@ public class ActivityStory extends Activity implements AdapterView.OnItemClickLi
     }
 
     public void showOptions(final View view) {
-        Toast.makeText(this, "show", Toast.LENGTH_SHORT).show();
         showOptions.setVisibility(INVISIBLE);
         hideOptions.setVisibility(VISIBLE);
     }
 
     public void hideOptions(final View view) {
-        Toast.makeText(this, "hide", Toast.LENGTH_SHORT).show();
         showOptions.setVisibility(VISIBLE);
         hideOptions.setVisibility(INVISIBLE);
     }
@@ -295,7 +307,8 @@ public class ActivityStory extends Activity implements AdapterView.OnItemClickLi
         if(selectedItem != null && selectedItem == view) {
             view.setSelected(false);
             Toast.makeText(this, "OK, choice done!", Toast.LENGTH_SHORT).show();
-//            todo
+            player.increasePoints(position); // add points
+            player.progress();
         } else {
             selectedItem = view;
             view.setSelected(true);
@@ -307,32 +320,34 @@ public class ActivityStory extends Activity implements AdapterView.OnItemClickLi
 
         private final Story story;
 
-        private TreeMap<String, Vector<String>> orderedSceneIdToStepIdMap = new TreeMap<>();
-        private String currentSceneId;
-        private String currentStepId;
+        private Vector<SceneAndStep> orderedScenesAndSteps = new Vector<>();
+        private int currentSceneAndStepIndex;
+        private int currentPoints;
 
         private Player(final Story story) {
             this.story = story;
-            this.orderedSceneIdToStepIdMap.clear();
+            this.orderedScenesAndSteps.clear();
         }
 
         private void load() {
             final Vector<Scene> orderedScenes = story.getOrderedScenes();
             for(final Scene scene : orderedScenes) {
                 final Vector<Step> orderedSteps = scene.getOrderedSteps();
-                final Vector<String> stepTimeline = new Vector<>();
                 for(final Step step : orderedSteps) {
-                    stepTimeline.add(step.getId());
+                    final SceneAndStep sceneAndStep = new SceneAndStep(scene, step);
+                    orderedScenesAndSteps.add(sceneAndStep);
                 }
-                orderedSceneIdToStepIdMap.put(scene.getId(), stepTimeline);
             }
-            currentSceneId = preferences.getString(PREFERENCE_KEY_CURRENT_SCENE_ID, orderedScenes.firstElement().getId());
-            currentStepId  = preferences.getString(PREFERENCE_KEY_CURRENT_STEP_ID, orderedSceneIdToStepIdMap.get(currentSceneId).firstElement());
+            final State state = Preferences.getState(ActivityStory.this, story.getId());
+            currentSceneAndStepIndex = state.getIndex();
+            currentPoints = state.getPoints();
         }
 
         private void resume() {
-            final Scene currentScene = story.getSceneById(currentSceneId);
-            final Step currentStep = currentScene.getStepById(currentStepId);
+            final SceneAndStep currentSceneAndStep = orderedScenesAndSteps.get(currentSceneAndStepIndex);
+            final Scene currentScene = currentSceneAndStep.getScene();
+            final Step currentStep = currentSceneAndStep.getStep();
+            stateTextView.setText("Story: " + story.getId() + ", Scene: " + currentScene.getId() + ", Step: " + currentStep.getId() + ", Points: " + currentPoints);
 
             setupScene(story, currentScene);
             playStep(story, currentStep);
@@ -344,34 +359,59 @@ public class ActivityStory extends Activity implements AdapterView.OnItemClickLi
         }
 
         private void save() {
-            preferences.edit().putString(PREFERENCE_KEY_CURRENT_SCENE_ID, currentSceneId).apply();
-            preferences.edit().putString(PREFERENCE_KEY_CURRENT_STEP_ID, currentStepId).apply();
+//            final SceneAndStep currentSceneAndStep = orderedScenesAndSteps.get(currentSceneAndStepIndex);
+//            Preferences.setState(ActivityStory.this, story.getId(), currentSceneAndStep.getScene().getId(), currentSceneAndStep.getStep().getId(), currentPoints);
+            Preferences.setState(ActivityStory.this, story.getId(), new State(currentSceneAndStepIndex, currentPoints));
+        }
+
+        private int increasePoints(int position) {
+            final SceneAndStep currentSceneAndStep = orderedScenesAndSteps.get(currentSceneAndStepIndex);
+            final Step currentStep = currentSceneAndStep.getStep();
+            if("interaction".equals(currentStep.getAction())) {
+                final Interaction interaction = story.getInteractionById(currentStep.getResourceId());
+                currentPoints += interaction.getChoices().get(position).getScore();
+            } else {
+                Log.w(TAG, "Warning: trying to increase points for a step other than 'interaction': " + currentStep);
+            }
+            return currentPoints;
         }
 
         private void progress() {
-            final Scene currentScene = story.getSceneById(currentSceneId);
-            final Step currentStep = currentScene.getStepById(currentStepId);
 
-            // check if another step is available
-            final Vector<String> stepTimeline = orderedSceneIdToStepIdMap.get(currentSceneId);
-            final int currentStepIdIndex = stepTimeline.indexOf(currentStepId);
-            if(currentStepIdIndex < stepTimeline.size() - 1) {
+            // check if another scene/step combo is available
+            if(currentSceneAndStepIndex < orderedScenesAndSteps.size() - 1) {
                 // move to next step
-                currentStepId = stepTimeline.elementAt(currentStepIdIndex + 1);
+                currentSceneAndStepIndex++;
             } else {
-                // otherwise check if another scene is available
-                final String [] orderedSceneIds = new String[orderedSceneIdToStepIdMap.size()];
-                final int currentSceneIndex = Arrays.binarySearch(orderedSceneIds, currentSceneId);
-                if(currentSceneIndex < orderedSceneIdToStepIdMap.size() - 1) {
-                    currentSceneId = orderedSceneIds[currentSceneIndex + 1];
-                } else {
-                    // no more scenes...
-                    Toast.makeText(ActivityStory.this, "TODO SCENE(S) FINISHED", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
+                // no more scenes...
+                Toast.makeText(ActivityStory.this, "TODO SCENE(S) FINISHED", Toast.LENGTH_SHORT).show();
+                finish();
             }
 
             resume();
+        }
+    }
+
+    private class SceneAndStep {
+        private final Scene scene;
+        private final Step step;
+
+        SceneAndStep(Scene scene, Step step) {
+            this.scene = scene;
+            this.step = step;
+        }
+
+        public Scene getScene() {
+            return scene;
+        }
+
+        public Step getStep() {
+            return step;
+        }
+
+        @Override
+        public String toString() {
+            return scene.getId() + "+" + step.getId();
         }
     }
 }

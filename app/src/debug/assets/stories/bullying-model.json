@@ -1,7 +1,7 @@
 {
   "id" : "bullying-episode-intro",
   "title": "First day at school",
-  "description": "It's a first day at school and Allan's classmates are less than welcoming. Can you figure out how things could imrpove?",
+  "description": "It's a first day at school and Allan's classmates are less than welcoming. Can you figure out how things could improve?",
   "copyright": "Inspire Research Centre",
   "year": 2016,
   "url": "http://inspirecenter.org",
@@ -99,6 +99,11 @@
       "id": "dialog-0",
       "title": "First day at school",
       "message": "Andreas shows up in school in his first day, and other students are less than welcoming"
+    },
+    {
+      "id": "dialog-1",
+      "title": "The end",
+      "message": "What did you learn?"
     }
   ],
   "interactions": [
@@ -173,6 +178,69 @@
           "order": 2,
           "action": "interaction",
           "resource-id": "interaction-0",
+          "transition-in": "fade-in",
+          "delay-in": 0,
+          "transition-out": "disappear",
+          "delay-out": 0,
+          "progression": "click"
+        },
+        {
+          "id": "step0-3",
+          "order": 3,
+          "action": "dialog",
+          "resource-id": "dialog-1",
+          "transition-in": "fade-in",
+          "delay-in": 0,
+          "transition-out": "disappear",
+          "delay-out": 0,
+          "progression": "click"
+        }
+      ]
+    },
+    {
+      "id": "scene-1",
+      "order": 0,
+      "background": "school-img",
+      "soundtrack": "playground-snd",
+      "steps": [
+        {
+          "id": "step1-0",
+          "order": 1,
+          "action": "dialog",
+          "resource-id": "dialog-0",
+          "transition-in": "fade-in",
+          "delay-in": 200,
+          "transition-out": "disappear",
+          "delay-out": 0,
+          "progression": "click"
+        },
+        {
+          "id": "step1-1",
+          "order": 1,
+          "action": "video",
+          "resource-id": "sample-vid",
+          "transition-in": "fade-in",
+          "delay-in": 200,
+          "transition-out": "disappear",
+          "delay-out": 0,
+          "progression": "automatic"
+        },
+        {
+          "id": "step1-2",
+          "order": 2,
+          "action": "interaction",
+          "resource-id": "interaction-0",
+          "transition-in": "fade-in",
+          "delay-in": 0,
+          "transition-out": "disappear",
+          "delay-out": 0,
+          "progression": "click"
+        },
+        {
+          "id": "step1-3",
+          "order": 3,
+          "action": "dialog",
+          "resource-id": "dialog-1",
           "transition-in": "fade-in",
           "delay-in": 0,
           "transition-out": "disappear",

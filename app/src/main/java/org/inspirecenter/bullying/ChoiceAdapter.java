@@ -24,6 +24,12 @@ public class ChoiceAdapter extends ArrayAdapter<Choice> {
 
     private final LayoutInflater layoutInflater;
 
+    ChoiceAdapter(final Context context) {
+        super(context, R.layout.choice_list_item);
+
+        this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
     ChoiceAdapter(final Context context, final List<Choice> choices) {
         super(context, R.layout.choice_list_item, choices);
 

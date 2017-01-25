@@ -4,6 +4,12 @@
     <string name="submit_button_text">Submit Answer</string>
     <string name="choice_text">selection</string>
     <string name="Ok">Ok</string>
+    <string name="Reset">Reset</string>
+    <string name="Story_reset">Story reset</string>
+    <string name="Are_you_sure_you_want_reset_this_story">Are you sure you want reset this story?</string>
+    <string name="Yes">Yes</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Cancelled">Cancelled</string>
 
     <string name="Please_switch_to_landscape_orientation">Please switch to landscape orientation</string>
     <string name="Loading">Loading …</string>

@@ -77,19 +77,8 @@ public class Story implements Serializable {
         return title;
     }
 
-    /**
-     * @param title The title
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     /**
@@ -100,24 +89,10 @@ public class Story implements Serializable {
     }
 
     /**
-     * @param copyright The copyright
-     */
-    public void setCopyright(String copyright) {
-        this.copyright = copyright;
-    }
-
-    /**
      * @return The year
      */
     public Integer getYear() {
         return year;
-    }
-
-    /**
-     * @param year The year
-     */
-    public void setYear(Integer year) {
-        this.year = year;
     }
 
     /**
@@ -128,13 +103,6 @@ public class Story implements Serializable {
     }
 
     /**
-     * @param url The url
-     */
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    /**
      * @return The thumbnail
      */
     public String getThumbnail() {
@@ -142,24 +110,10 @@ public class Story implements Serializable {
     }
 
     /**
-     * @param thumbnail The thumbnail
-     */
-    public void setThumbnail(String thumbnail) {
-        this.thubmnail = thumbnail;
-    }
-
-    /**
      * @return The authors
      */
     public List<Author> getAuthors() {
         return authors;
-    }
-
-    /**
-     * @param authors The authors
-     */
-    public void setAuthors(List<Author> authors) {
-        this.authors = authors;
     }
 
     /**
@@ -171,13 +125,6 @@ public class Story implements Serializable {
 
     private Map<String,Resource> idToResourceMap = new HashMap<>();
 
-    /**
-     * @param resources The resources
-     */
-    public void setResources(List<Resource> resources) {
-        this.resources = resources;
-    }
-
     public Resource getResourceById(final String id) {
         if(idToResourceMap.isEmpty()) {
             for(final Resource resource : resources) {
@@ -185,14 +132,6 @@ public class Story implements Serializable {
             }
         }
         return idToResourceMap.get(id);
-    }
-
-    public List<Dialog> getDialogs() {
-        return dialogs;
-    }
-
-    public void setDialogs(List<Dialog> dialogs) {
-        this.dialogs = dialogs;
     }
 
     private Map<String,Dialog> idToDialogMap = new HashMap<>();
@@ -206,20 +145,6 @@ public class Story implements Serializable {
         return idToDialogMap.get(id);
     }
 
-    /**
-     * @return The interactions
-     */
-    public List<Interaction> getInteractions() {
-        return interactions;
-    }
-
-    /**
-     * @param interactions The interactions
-     */
-    public void setInteractions(List<Interaction> interactions) {
-        this.interactions = interactions;
-    }
-
     private Map<String,Interaction> idToInteractionMap = new HashMap<>();
 
     public Interaction getInteractionById(final String id) {
@@ -230,13 +155,6 @@ public class Story implements Serializable {
         }
 
         return idToInteractionMap.get(id);
-    }
-
-    /**
-     * @return The scenes
-     */
-    public List<Scene> getScenes() {
-        return scenes;
     }
 
     public Vector<Scene> getOrderedScenes() {
@@ -256,12 +174,4 @@ public class Story implements Serializable {
         }
         return idToSceneMap.get(id);
     }
-
-    /**
-     * @param scenes The scenes
-     */
-    public void setScenes(List<Scene> scenes) {
-        this.scenes = scenes;
-    }
-
 }

@@ -127,4 +127,13 @@ public class Choice implements Serializable, Comparable {
             throw new RuntimeException("Cannot compare this with non-instances of " + getClass());
         }
     }
+
+    @Override
+    public String toString() {
+        return "Choice{" +
+                "order=" + order +
+                ", prompt='" + prompt + '\'' +
+                ", feedback='" + feedback + '\'' +
+                '}';
+    }
 }
